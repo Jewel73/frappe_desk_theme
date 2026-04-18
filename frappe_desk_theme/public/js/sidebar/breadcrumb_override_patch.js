@@ -73,14 +73,14 @@ function patch_breadcrumbs_update() {
 			}
 		}
 
-		if (
-			breadcrumbs.workspace &&
-			frappe.workspace_map[breadcrumbs.workspace]?.app &&
-			frappe.workspace_map[breadcrumbs.workspace]?.app != frappe.current_app
-		) {
-			let app = frappe.workspace_map[breadcrumbs.workspace].app;
-			frappe.app.sidebar.apps_switcher.set_current_app(app);
-		}
+		// if (
+		// 	breadcrumbs.workspace &&
+		// 	frappe.workspace_map[breadcrumbs.workspace]?.app &&
+		// 	frappe.workspace_map[breadcrumbs.workspace]?.app != frappe.current_app
+		// ) {
+		// 	let app = frappe.workspace_map[breadcrumbs.workspace].app;
+		// 	frappe.app.sidebar.apps_switcher.set_current_app(app);
+		// }
 		this.toggle(true);
 	};
 }
