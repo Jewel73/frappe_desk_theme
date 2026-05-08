@@ -1172,20 +1172,24 @@ class FrappeDeskTheme {
 	}
 }
 
-// Initialize theme system when DOM is ready
-// Handles both immediate initialization and delayed initialization for slow-loading pages
-if (document.readyState === "loading") {
-	// DOM is still loading, wait for DOMContentLoaded event
-	document.addEventListener("DOMContentLoaded", () => {
+// Initialize theme system immediately
+const initTheme = () => {
+	if (!window.frappeDeskTheme) {
 		const theme = new FrappeDeskTheme();
 		window.frappeDeskTheme = theme;
+		// Immediate first pass
+		theme.applySidebarIcons();
+		
+		// Page change listeners
 		$(document).on('page-change', () => theme.applySidebarIcons());
+		// Backup ready listener
 		$(document).ready(() => theme.applySidebarIcons());
-	});
+	}
+};
+
+// Run as soon as script loads if DOM is ready, or wait for DOMContentLoaded
+if (document.readyState === "complete" || document.readyState === "interactive") {
+	initTheme();
 } else {
-	// DOM is already loaded, initialize immediately
-	const theme = new FrappeDeskTheme();
-	window.frappeDeskTheme = theme;
-	$(document).on('page-change', () => theme.applySidebarIcons());
-	$(document).ready(() => theme.applySidebarIcons());
+	document.addEventListener("DOMContentLoaded", initTheme);
 }

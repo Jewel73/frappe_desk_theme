@@ -292,6 +292,20 @@ body {
     color: var(--sidebar-text-color, #525252) !important;
 }
 
+/* Premium compact layout - applied early to prevent jumping */
+.standard-sidebar-item,
+.sidebar-item-container {
+    margin: 0 !important;
+    /* padding: 2px 0 !important; */
+}
+
+.standard-sidebar-item .item-anchor {
+    /* padding: 8px 12px !important; */
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
 /* Sidebar items - all text elements in sidebar navigation */
 .standard-sidebar-item,
 .item-anchor,
@@ -682,20 +696,6 @@ body.has-sticky-footer:not(:has(.main-section)) {
    PREMIUM SIDEBAR ICONS & COMPACT LAYOUT
    ======================================== */
 
-/* Stripping margin and padding from sidebar items for a premium, minimal look */
-.standard-sidebar-item,
-.sidebar-item-container {
-    margin: 0 !important;
-    padding: 2px 0 !important;
-}
-
-.standard-sidebar-item .item-anchor {
-    padding: 0px 0px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-}
-
 /* Premium Icon Container - Duo-tone effect using brand color */
 .premium-icon-container {
     display: flex !important;
@@ -707,6 +707,14 @@ body.has-sticky-footer:not(:has(.main-section)) {
     background: rgba(var(--icon-brand-color-rgb), 0.1) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     flex-shrink: 0 !important;
+    opacity: 1 !important;
+    /* Ensure it's visible once processed */
+}
+
+/* Hide default icons initially to prevent flash of unstyled content */
+.sidebar-item-icon:not(.premium-icon-container) svg {
+    opacity: 0 !important;
+    transition: opacity 0.2s ease;
 }
 
 .premium-icon-container svg {
