@@ -317,28 +317,28 @@ body {
 }
 
 /* Sidebar item hover state - background and text color on hover */
-.standard-sidebar-item:hover {
+/* .standard-sidebar-item:hover {
     background-color: var(--sidebar-hover-bg, #e9ecef) !important;
     color: var(--sidebar-hover-text-color, #212529) !important;
-}
+} */
 
 /* Sidebar item hover state - child elements inherit hover colors */
-.standard-sidebar-item:hover .item-anchor,
+/* .standard-sidebar-item:hover .item-anchor,
 .standard-sidebar-item:hover .sidebar-item-label,
 .standard-sidebar-item:hover .sidebar-item-icon,
 .standard-sidebar-item:hover .sidebar-item-icon svg {
     color: var(--sidebar-hover-text-color, #212529) !important;
-}
+} */
 
 /* Sidebar item active state - same as hover for active items */
-.standard-sidebar-item.active-sidebar,
+/* .standard-sidebar-item.active-sidebar,
 .standard-sidebar-item.active-sidebar:hover {
     background-color: var(--sidebar-hover-bg, #e9ecef) !important;
     color: var(--sidebar-hover-text-color, #212529) !important;
-}
+} */
 
 /* Sidebar item active state - child elements inherit active colors */
-.standard-sidebar-item.active-sidebar .item-anchor,
+/* .standard-sidebar-item.active-sidebar .item-anchor,
 .standard-sidebar-item.active-sidebar .sidebar-item-label,
 .standard-sidebar-item.active-sidebar .sidebar-item-icon,
 .standard-sidebar-item.active-sidebar .sidebar-item-icon svg,
@@ -347,7 +347,7 @@ body {
 .standard-sidebar-item.active-sidebar:hover .sidebar-item-icon,
 .standard-sidebar-item.active-sidebar:hover .sidebar-item-icon svg {
     color: var(--sidebar-hover-text-color, #212529) !important;
-}
+} */
 
 /* Sidebar icons - SVG elements with proper fill and stroke colors */
 .sidebar-item-icon svg {
@@ -356,11 +356,11 @@ body {
 }
 
 /* Sidebar icons hover state - SVG elements with hover colors */
-.standard-sidebar-item:hover .sidebar-item-icon svg,
+/* .standard-sidebar-item:hover .sidebar-item-icon svg,
 .standard-sidebar-item.active-sidebar .sidebar-item-icon svg {
     fill: var(--sidebar-hover-bg, #e9ecef) !important;
     stroke: var(--sidebar-hover-text-color, #212529) !important;
-}
+} */
 
 /* Collapse sidebar link */
 .collapse-sidebar-link {
@@ -725,22 +725,38 @@ body.has-sticky-footer:not(:has(.main-section)) {
 }
 
 /* Interaction Effects */
-.standard-sidebar-item:hover .premium-icon-container {
-    background: var(--icon-brand-color) !important;
-    transform: translateX(2px);
-    box-shadow: 0 4px 12px rgba(var(--icon-brand-color-rgb), 0.3);
+.standard-sidebar-item:hover,
+.standard-sidebar-item.active-sidebar,
+.standard-sidebar-item.selected {
+    background: #EFF5F5 !important;
 }
 
-.standard-sidebar-item:hover .premium-icon-container svg {
-    stroke: #ffffff !important;
+.standard-sidebar-item:hover .premium-icon-container,
+.standard-sidebar-item.active-sidebar .premium-icon-container,
+.standard-sidebar-item.selected .premium-icon-container {
+    transform: translateX(4px);
+    box-shadow: 0 4px 15px rgba(var(--icon-brand-color-rgb), 0.15);
+}
+
+/* Specialized Tools Hover Background */
+.standard-sidebar-item[data-title="Tools"]:hover,
+.standard-sidebar-item[item-name="Tools"]:hover {
+    background: #0ea5e9 !important; /* Vibrant Sky Blue for Tools */
+}
+
+.standard-sidebar-item[data-title="Tools"]:hover .sidebar-item-label {
+    color: #ffffff !important;
+}
+
+.standard-sidebar-item:hover .premium-icon-container svg,
+.standard-sidebar-item.active-sidebar .premium-icon-container svg,
+.standard-sidebar-item.selected .premium-icon-container svg {
+    stroke: var(--icon-brand-color) !important;
     transform: scale(1.1);
 }
 
-.standard-sidebar-item.active-sidebar .premium-icon-container {
-    background: var(--icon-brand-color) !important;
-    box-shadow: 0 4px 12px rgba(var(--icon-brand-color-rgb), 0.2);
-}
-
-.standard-sidebar-item.active-sidebar .premium-icon-container svg {
+/* White icon on solid hover for Tools */
+.standard-sidebar-item[data-title="Tools"]:hover .premium-icon-container svg,
+.standard-sidebar-item[item-name="Tools"]:hover .premium-icon-container svg {
     stroke: #ffffff !important;
 }
