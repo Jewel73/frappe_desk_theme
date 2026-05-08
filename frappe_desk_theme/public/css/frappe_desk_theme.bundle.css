@@ -77,7 +77,10 @@ label.control-label {
 }
 
 /* Login form container - supports absolute positioning (Left/Right/Center) */
-.for-login,.for-signup,.for-forgot, .for-login-with-email-link {
+.for-login,
+.for-signup,
+.for-forgot,
+.for-login-with-email-link {
     position: var(--login-box-position, static);
     right: var(--login-box-right, auto);
     left: var(--login-box-left, auto);
@@ -99,7 +102,8 @@ label.control-label {
 .for-login.theme-ready {
     opacity: 1;
     transform: translateY(0);
-    animation: none; /* Disable fallback animation when theme is ready */
+    animation: none;
+    /* Disable fallback animation when theme is ready */
 }
 
 /* Fallback keyframe animation to prevent login box from staying hidden */
@@ -111,10 +115,11 @@ label.control-label {
 }
 
 /* Login form card - inner container with padding and width controls */
-.login-content.page-card, .signup-content.page-card {
-    background-color: var(--login-box-bg,#fff) !important;
-    border: 2px solid var(--login-box-bg,#fff) !important;
-    width: var(--login-box-width,400px);
+.login-content.page-card,
+.signup-content.page-card {
+    background-color: var(--login-box-bg, #fff) !important;
+    border: 2px solid var(--login-box-bg, #fff) !important;
+    width: var(--login-box-width, 400px);
     padding: var(--login-box-padding);
 }
 
@@ -172,7 +177,7 @@ label.control-label {
 .navbar-toggler,
 .navbar-toggler span svg,
 .navbar svg.es-icon.icon-sm use,
-.notifications-seen > .es-icon {
+.notifications-seen>.es-icon {
     fill: var(--navbar-color);
     stroke-width: 0;
 }
@@ -216,7 +221,7 @@ button.navbar-toggler {
 /* Primary buttons - main action buttons throughout the application */
 .btn-primary,
 .btn-primary:active {
-    background-color: var(--btn-primary-bg,#171717) !important;
+    background-color: var(--btn-primary-bg, #171717) !important;
 }
 
 /* Primary button text - ensures text visibility on custom backgrounds */
@@ -239,14 +244,14 @@ button.navbar-toggler {
 .btn.btn-default.ellipsis,
 .btn-default,
 .btn-default:active {
-    background-color: var(--btn-secondary-bg,#f3f3f3);
+    background-color: var(--btn-secondary-bg, #f3f3f3);
     color: var(--btn-secondary-color);
 }
 
 /* Secondary button hover effects - consistent interaction feedback */
 .btn.btn-default.ellipsis:hover,
 .btn-default:hover {
-    background-color: var(--btn-secondary-hover-bg,#f3f3f3);
+    background-color: var(--btn-secondary-hover-bg, #f3f3f3);
     color: var(--btn-secondary-hover-color);
 }
 
@@ -256,13 +261,13 @@ button.navbar-toggler {
 
 /* Body background - sets overall page background color */
 body {
-    background-color: var(--body-bg,#fff);
+    background-color: var(--body-bg, #fff);
 }
 
 /* Page containers - main content wrapper background */
 .content.page-container,
 .page-head {
-    background-color: var(--body-bg,#fff);
+    background-color: var(--body-bg, #fff);
 }
 
 /* Content sections - form layouts and main content areas with rounded corners */
@@ -283,8 +288,8 @@ body {
 
 /* Main sidebar container - left navigation panel with custom background */
 .body-sidebar {
-    background-color: var(--sidebar-bg,#f8f8f8) !important;
-    color: var(--sidebar-text-color,#525252) !important;
+    background-color: var(--sidebar-bg, #f8f8f8) !important;
+    color: var(--sidebar-text-color, #525252) !important;
 }
 
 /* Sidebar items - all text elements in sidebar navigation */
@@ -294,7 +299,7 @@ body {
 .sidebar-item-icon,
 .sidebar-item-icon svg,
 .sidebar-item-control button {
-    color: var(--sidebar-text-color,#525252) !important;
+    color: var(--sidebar-text-color, #525252) !important;
 }
 
 /* Sidebar item hover state - background and text color on hover */
@@ -332,8 +337,8 @@ body {
 
 /* Sidebar icons - SVG elements with proper fill and stroke colors */
 .sidebar-item-icon svg {
-    fill: var(--sidebar-bg,#f8f8f8) !important;
-    stroke: var(--sidebar-text-color,#525252) !important;
+    fill: var(--sidebar-bg, #f8f8f8) !important;
+    stroke: var(--sidebar-text-color, #525252) !important;
 }
 
 /* Sidebar icons hover state - SVG elements with hover colors */
@@ -432,7 +437,7 @@ div.level-right {
 /* Social interaction elements - like buttons and comment counts (conditionally hidden) */
 .like-icon,
 .comment-count,
-.level-item.list-row-activity .mx-2  {
+.level-item.list-row-activity .mx-2 {
     display: var(--hide-like-comment, block) !important;
 }
 
@@ -443,7 +448,7 @@ div.level-right {
 }
 
 /* App switcher - navigation dropdown that can be hidden based on theme settings */
-.sidebar-item-control{
+.sidebar-item-control {
     display: var(--hide-app-switcher, block) !important;
 }
 
@@ -480,6 +485,7 @@ div.level-right {
 
 /* Mobile breakpoint - adjustments for smaller screens */
 @media (max-width: 768px) {
+
     /* Login form positioning - removes absolute positioning on mobile */
     .for-login {
         position: static;
@@ -503,8 +509,8 @@ div.level-right {
 }
 
 /* Main content area should flex to push footer down */
-.main-section > .container,
-.main-section > .page-container {
+.main-section>.container,
+.main-section>.page-container {
     flex: 1;
 }
 
@@ -522,16 +528,18 @@ div.level-right {
     gap: 10px;
     margin-top: auto;
     /* Position footer to align with main content area, not spanning full width */
-    margin-left: 50px; /* Default collapsed sidebar width */
+    margin-left: 50px;
+    /* Default collapsed sidebar width */
     transition: margin-left 200ms ease;
     /* Ensure footer has consistent height */
     min-height: 50px;
-    flex-shrink: 0; /* Prevent footer from shrinking */
+    flex-shrink: 0;
+    /* Prevent footer from shrinking */
 }
 
 /* Adjust footer margin when sidebar is expanded */
-.body-sidebar-container.expanded ~ * .desk-footer,
-.body-sidebar-container.expanded + .main-section .desk-footer {
+.body-sidebar-container.expanded~* .desk-footer,
+.body-sidebar-container.expanded+.main-section .desk-footer {
     margin-left: var(--left-sidebar-width, 220px);
 }
 
@@ -544,10 +552,11 @@ div.level-right {
 .desk-footer.sticky {
     position: fixed;
     bottom: 0;
-    left: 50px; /* Default collapsed sidebar width */
+    left: 50px;
+    /* Default collapsed sidebar width */
     right: 0;
     z-index: 1000;
-    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     margin-left: 0;
     transition: left 200ms ease-in-out;
     /* Ensure consistent height for sticky footer */
@@ -556,15 +565,17 @@ div.level-right {
 }
 
 /* JavaScript will handle dynamic positioning, but keep CSS fallback */
-.body-sidebar-container.expanded ~ * .desk-footer.sticky,
+.body-sidebar-container.expanded~* .desk-footer.sticky,
 body[data-sidebar="1"] .desk-footer.sticky {
-    left: 220px; /* Use fixed value instead of CSS variable for better performance */
+    left: 220px;
+    /* Use fixed value instead of CSS variable for better performance */
 }
 
 /* When footer is sticky, add padding to main section to prevent content overlap */
 .main-section.has-sticky-footer,
 body.has-sticky-footer .main-section {
-    padding-bottom: 60px; /* 50px footer height + 10px buffer */
+    padding-bottom: 60px;
+    /* 50px footer height + 10px buffer */
 }
 
 /* Fallback: If main-section doesn't exist, add padding to body */
@@ -574,7 +585,8 @@ body.has-sticky-footer:not(:has(.main-section)) {
 
 /* Ensure content doesn't overlap with sticky footer */
 .main-section.has-sticky-footer {
-    min-height: calc(100vh - 60px); /* Full height minus footer and buffer */
+    min-height: calc(100vh - 60px);
+    /* Full height minus footer and buffer */
 }
 
 /* Footer left section - copyright text */
@@ -606,6 +618,7 @@ body.has-sticky-footer:not(:has(.main-section)) {
 
 /* Responsive footer for mobile and tablets */
 @media (max-width: 992px) {
+
     /* On mobile/tablet, footer should span full width as sidebar becomes overlay */
     .desk-footer {
         margin-left: 0 !important;
@@ -632,12 +645,13 @@ body.has-sticky-footer:not(:has(.main-section)) {
     .main-section.has-sticky-footer,
     body.has-sticky-footer .main-section,
     body.has-sticky-footer:not(:has(.main-section)) {
-        padding-bottom: 70px; /* Reduced padding for mobile */
+        padding-bottom: 70px;
+        /* Reduced padding for mobile */
     }
 }
 
 .carousel-nav {
-    background: var(--carousel-nav-bg, rgba(0,0,0,0.3));
+    background: var(--carousel-nav-bg, rgba(0, 0, 0, 0.3));
     color: var(--carousel-nav-color, #fff);
     border: none;
     font-size: var(--carousel-nav-size, 2rem);
@@ -663,3 +677,62 @@ body.has-sticky-footer:not(:has(.main-section)) {
     right: 20px;
 }
 
+
+/* ========================================
+   PREMIUM SIDEBAR ICONS & COMPACT LAYOUT
+   ======================================== */
+
+/* Stripping margin and padding from sidebar items for a premium, minimal look */
+.standard-sidebar-item,
+.sidebar-item-container {
+    margin: 0 !important;
+    padding: 2px 0 !important;
+}
+
+.standard-sidebar-item .item-anchor {
+    padding: 0px 0px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+/* Premium Icon Container - Duo-tone effect using brand color */
+.premium-icon-container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    background: rgba(var(--icon-brand-color-rgb), 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-shrink: 0 !important;
+}
+
+.premium-icon-container svg {
+    width: 20px !important;
+    height: 20px !important;
+    stroke: var(--icon-brand-color) !important;
+    transition: transform 0.3s ease !important;
+}
+
+/* Interaction Effects */
+.standard-sidebar-item:hover .premium-icon-container {
+    background: var(--icon-brand-color) !important;
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px rgba(var(--icon-brand-color-rgb), 0.3);
+}
+
+.standard-sidebar-item:hover .premium-icon-container svg {
+    stroke: #ffffff !important;
+    transform: scale(1.1);
+}
+
+.standard-sidebar-item.active-sidebar .premium-icon-container {
+    background: var(--icon-brand-color) !important;
+    box-shadow: 0 4px 12px rgba(var(--icon-brand-color-rgb), 0.2);
+}
+
+.standard-sidebar-item.active-sidebar .premium-icon-container svg {
+    stroke: #ffffff !important;
+}

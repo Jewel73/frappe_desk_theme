@@ -38,6 +38,7 @@ class FrappeDeskTheme {
 			}
 
 			this.setupEventListeners();
+			this.setupSidebarObserver();
 		} catch (error) {
 			// Production-ready silent fail - apply default theme and show login box
 			this.applyTheme();
@@ -667,6 +668,7 @@ class FrappeDeskTheme {
 		}
 		this.showLoginBox();
 		this.createFooter();
+		this.applySidebarIcons();
 	}
 
 	/**
@@ -939,6 +941,7 @@ class FrappeDeskTheme {
 				if (!document.querySelector("#desk-footer")) {
 					this.createFooter();
 				}
+				this.applySidebarIcons();
 			}, 500); // 500ms delay to avoid constant recreation
 		});
 
@@ -1063,6 +1066,110 @@ class FrappeDeskTheme {
 		document.documentElement.style.removeProperty("--login-bg-carousel-image");
 		this._carouselIndex = 0;
 	}
+
+	setupSidebarObserver() {
+		const observer = new MutationObserver(() => {
+			window.requestAnimationFrame(() => this.applySidebarIcons());
+		});
+
+		const sidebarContainer = document.querySelector('.layout-side-section, .list-sidebar');
+		if (sidebarContainer) {
+			observer.observe(sidebarContainer, { childList: true, subtree: true });
+		}
+	}
+
+	applySidebarIcons() {
+		const colors = {
+			home: '#8B5CF6', accounting: '#10B981', travel: '#3ea1af', settings: '#64748B',
+			reports: '#F43F5E', people: '#F59E0B', masters: '#6366F1', customers: '#EC4899',
+			suppliers: '#8B5CF6', invoices: '#10B981', payments: '#F59E0B', transactions: '#06B6D4',
+			hotel: '#6366F1', visa: '#3B82F6', calendar: '#F43F5E', refund: '#64748B',
+			dashboard: '#8B5CF6', assets: '#10B981', backoffice: '#3ea1af', frontoffice: '#06B6D4',
+			tools: '#64748B', website: '#A855F7', manufacturing: '#475569', stock: '#F59E0B',
+			buying: '#F97316', selling: '#EC4899', projects: '#6366F1', support: '#3ea1af',
+			quality: '#10B981', default: '#94A3B8'
+		};
+
+		const iconMap = {
+			home: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+			accounting: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="7" rx="2" ry="2"/><path d="M16 8V5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v3"/><line x1="12" y1="12" x2="12" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>`,
+			travel: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>`,
+			settings: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`,
+			reports: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+			people: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+			masters: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4.03 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>`,
+			customers: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>`,
+			suppliers: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+			invoices: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 14.5a2.5 2.5 0 0 0-5 0c0 2.5 5 2.5 5 5a2.5 2.5 0 0 1-5 0"/><path d="M11.5 12.5v9"/></svg>`,
+			payments: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M7 15h.01"/><path d="M11 15h.01"/></svg>`,
+			transactions: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>`,
+			hotel: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14"/><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/><path d="M9 9h.01"/><path d="M15 9h.01"/><path d="M9 13h.01"/><path d="M15 13h.01"/></svg>`,
+			visa: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2"/><path d="M8 17h6"/></svg>`,
+			calendar: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+			refund: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+			dashboard: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>`,
+			assets: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+			backoffice: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="M12 10v4"/><path d="M10 12h4"/></svg>`,
+			frontoffice: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg>`,
+			tools: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-2 2-5-5 2-2"/><path d="M7 21 5 19l10-10 2 2Z"/><path d="m2 11 5 5"/><path d="m11 2 5 5"/></svg>`,
+			website: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+			manufacturing: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v7"/><path d="M21 11H3v10h18V11Z"/><circle cx="12" cy="16" r="2"/></svg>`,
+			stock: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+			buying: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+			selling: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="m9 11 1 9"/><path d="M4.5 11 9 4"/></svg>`,
+			projects: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h10"/><path d="M9 4v16"/><path d="m3 9 3 3-3 3"/><path d="M14 4h7"/><path d="M14 9h4"/><path d="M14 15h7"/><path d="M14 20h4"/></svg>`,
+			support: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>`,
+			quality: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>`,
+			default: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>`,
+		};
+
+		const keywordMap = [
+			[['home'], 'home'], [['account', 'finance', 'ledger'], 'accounting'],
+			[['travel', 'flight', 'airline'], 'travel'], [['setting', 'config'], 'settings'],
+			[['report', 'analytic'], 'reports'], [['people', 'hr', 'human'], 'people'],
+			[['master'], 'masters'], [['customer', 'client', 'crm'], 'customers'],
+			[['supplier', 'vendor'], 'suppliers'], [['invoice', 'bill'], 'invoices'],
+			[['payment', 'receipt'], 'payments'], [['transaction'], 'transactions'],
+			[['hotel'], 'hotel'], [['visa'], 'visa'], [['calendar'], 'calendar'],
+			[['refund'], 'refund'], [['dashboard', 'workspace'], 'dashboard'],
+			[['asset', 'stock'], 'assets'], [['back office'], 'backoffice'],
+			[['front office'], 'frontoffice'], [['tool'], 'tools'], [['web'], 'website'],
+			[['manufacturing'], 'manufacturing'], [['buying'], 'buying'], [['selling'], 'selling'],
+			[['project'], 'projects'], [['support', 'help'], 'support'], [['quality'], 'quality'],
+		];
+
+		const getIconKey = (name) => {
+			if (!name) return 'default';
+			const lowerName = name.toLowerCase();
+			for (const [keywords, key] of keywordMap) {
+				if (keywords.some(k => lowerName.includes(k))) return key;
+			}
+			return 'default';
+		};
+
+		const hexToRgb = (hex) => {
+			const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '148, 163, 184';
+		};
+
+		const items = document.querySelectorAll('.standard-sidebar-item, .sidebar-item-container');
+		items.forEach((item) => {
+			const label = item.querySelector('.sidebar-item-label, .item-anchor');
+			if (!label) return;
+
+			const itemName = item.getAttribute('item-name') || label.textContent.trim();
+			const key = getIconKey(itemName);
+			const color = colors[key] || colors.default;
+
+			const iconContainer = item.querySelector('.sidebar-item-icon');
+			if (iconContainer) {
+				iconContainer.innerHTML = iconMap[key](color);
+				iconContainer.classList.add('premium-icon-container');
+				iconContainer.style.setProperty('--icon-brand-color', color);
+				iconContainer.style.setProperty('--icon-brand-color-rgb', hexToRgb(color));
+			}
+		});
+	}
 }
 
 // Initialize theme system when DOM is ready
@@ -1070,9 +1177,15 @@ class FrappeDeskTheme {
 if (document.readyState === "loading") {
 	// DOM is still loading, wait for DOMContentLoaded event
 	document.addEventListener("DOMContentLoaded", () => {
-		window.frappeDeskTheme = new FrappeDeskTheme();
+		const theme = new FrappeDeskTheme();
+		window.frappeDeskTheme = theme;
+		$(document).on('page-change', () => theme.applySidebarIcons());
+		$(document).ready(() => theme.applySidebarIcons());
 	});
 } else {
 	// DOM is already loaded, initialize immediately
-	window.frappeDeskTheme = new FrappeDeskTheme();
+	const theme = new FrappeDeskTheme();
+	window.frappeDeskTheme = theme;
+	$(document).on('page-change', () => theme.applySidebarIcons());
+	$(document).ready(() => theme.applySidebarIcons());
 }
