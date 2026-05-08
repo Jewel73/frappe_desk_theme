@@ -33,7 +33,7 @@ app_include_js = [
 	"/assets/frappe_desk_theme/js/sidebar/breadcrumb_override_patch.js",
 ]
 # include js, css files in header of web template
-web_include_css = "/assets/frappe_desk_theme/css/frappe_desk_theme.bundle.css"
+web_include_css = "/assets/frappe_desk_theme/css/frappe_desk_theme.bundle.css?v=1.0.0"
 web_include_js = "/assets/frappe_desk_theme/js/frappe_desk_theme.bundle.js"
 
 # include custom scss in every website theme (without file extension ".scss")
