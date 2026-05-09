@@ -493,6 +493,191 @@ div.level-right {
     color: var(--widget-color);
 }
 
+/* Premium Workspace Card Styling – Compact Travel Agency Look */
+
+/* Prevent unstyled flash: cards start hidden, revealed instantly by CSS */
+.widget.links-widget-box {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+    overflow: hidden;
+    position: relative;
+    animation: cardReveal 0.3s ease forwards;
+}
+
+@keyframes cardReveal {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.widget.links-widget-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07) !important;
+    border-color: rgba(62, 161, 175, 0.25) !important;
+}
+
+/* Left Gradient Accent Bar */
+.widget.links-widget-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3.5px;
+    height: 0;
+    background: linear-gradient(to bottom, #3ea1af, #8B5CF6);
+    border-radius: 0 2px 2px 0;
+    transition: height 0.25s ease;
+}
+
+.widget.links-widget-box:hover::before {
+    height: 100%;
+}
+
+/* Card Header – icon + title tightly aligned */
+.widget.links-widget-box .widget-head {
+    padding: 14px 16px 6px !important;
+    border-bottom: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+}
+
+/* Remove internal spacing from widget-label so icon sits flush with title */
+.widget.links-widget-box .widget-label {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.widget.links-widget-box .widget-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #334155 !important;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hide empty subtitle to avoid extra space */
+.widget.links-widget-box .widget-subtitle:empty {
+    display: none !important;
+}
+
+/* Hide empty control div */
+.widget.links-widget-box .widget-control:empty {
+    display: none !important;
+}
+
+/* Card Body – tight */
+.widget.links-widget-box .widget-body {
+    padding: 2px 8px 10px !important;
+}
+
+/* Link Items – compact rows */
+.widget.links-widget-box .link-item {
+    padding: 7px 12px !important;
+    margin: 1px 0 !important;
+    border-radius: 8px !important;
+    transition: background 0.15s ease, transform 0.15s ease !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    background: transparent !important;
+    text-decoration: none !important;
+}
+
+.widget.links-widget-box .link-item:hover {
+    background: rgba(62, 161, 175, 0.07) !important;
+    transform: translateX(4px);
+}
+
+.widget.links-widget-box .link-text {
+    font-weight: 500 !important;
+    color: #475569 !important;
+    font-size: 13px !important;
+    transition: color 0.15s ease;
+}
+
+.widget.links-widget-box .link-item:hover .link-text {
+    color: #3ea1af !important;
+}
+
+/* Arrow Icon – subtle, only on hover */
+.widget.links-widget-box .link-item .es-icon {
+    margin-left: auto !important;
+    width: 12px !important;
+    height: 12px !important;
+    stroke: #cbd5e1 !important;
+    transition: all 0.15s ease !important;
+    opacity: 0;
+}
+
+.widget.links-widget-box .link-item:hover .es-icon {
+    stroke: #3ea1af !important;
+    opacity: 1;
+    transform: translate(2px, -2px);
+}
+
+/* Card Title Icon (injected by JS) – inline with text */
+.premium-card-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 6px !important;
+    flex-shrink: 0 !important;
+}
+
+.premium-card-icon svg {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* Widget Footer – hide if empty */
+.widget.links-widget-box .widget-footer:empty {
+    display: none;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .widget.links-widget-box {
+    background: rgba(30, 41, 59, 0.75) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="dark"] .widget.links-widget-box .widget-title {
+    color: #5eead4 !important;
+}
+
+[data-theme="dark"] .widget.links-widget-box .link-text {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .widget.links-widget-box .link-item:hover {
+    background: rgba(62, 161, 175, 0.12) !important;
+}
+
+[data-theme="dark"] .widget.links-widget-box .link-item:hover .link-text {
+    color: #5eead4 !important;
+}
+
+
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
@@ -741,7 +926,8 @@ body.has-sticky-footer:not(:has(.main-section)) {
 /* Specialized Tools Hover Background */
 .standard-sidebar-item[data-title="Tools"]:hover,
 .standard-sidebar-item[item-name="Tools"]:hover {
-    background: #0ea5e9 !important; /* Vibrant Sky Blue for Tools */
+    background: #0ea5e9 !important;
+    /* Vibrant Sky Blue for Tools */
 }
 
 .standard-sidebar-item[data-title="Tools"]:hover .sidebar-item-label {

@@ -942,7 +942,7 @@ class FrappeDeskTheme {
 					this.createFooter();
 				}
 				this.applySidebarIcons();
-			}, 500); // 500ms delay to avoid constant recreation
+			}, 150); // 150ms debounce — fast enough to feel instant
 		});
 
 		// Observe all changes in document body and its children
@@ -1077,18 +1077,30 @@ class FrappeDeskTheme {
 		}
 	}
 
-	applySidebarIcons() {
-		const colors = {
-			home: '#8B5CF6', accounting: '#10B981', travel: '#3ea1af', settings: '#64748B',
-			reports: '#F43F5E', people: '#8c0bf5ff', masters: '#6366F1', customers: '#EC4899',
-			suppliers: '#8B5CF6', invoices: '#10B981', payments: '#F59E0B', transactions: '#06B6D4',
-			hotel: '#6366F1', visa: '#3B82F6', calendar: '#F43F5E', refund: '#64748B',
-			dashboard: '#8B5CF6', assets: '#10B981', backoffice: '#3ea1af', frontoffice: '#06B6D4',
-			tools: '#64748B', website: '#A855F7', manufacturing: '#475569', stock: '#F59E0B',
-			buying: '#F97316', selling: '#EC4899', projects: '#6366F1', support: '#3ea1af',
-			quality: '#10B981', default: '#94A3B8'
-		};
+	getIconKey(name) {
+		if (!name) return 'default';
+		const lowerName = name.toLowerCase();
+		const keywordMap = [
+			[['home'], 'home'], [['account', 'finance', 'ledger', 'billing'], 'accounting'],
+			[['travel', 'flight', 'airline'], 'travel'], [['setting', 'config'], 'settings'],
+			[['report', 'analytic'], 'reports'], [['people', 'hr', 'human', 'user'], 'people'],
+			[['master'], 'masters'], [['customer', 'client', 'crm'], 'customers'],
+			[['supplier', 'vendor'], 'suppliers'], [['invoice', 'bill', 'receipt'], 'invoices'],
+			[['payment', 'cash', 'bank'], 'payments'], [['transaction'], 'transactions'],
+			[['hotel'], 'hotel'], [['visa'], 'visa'], [['calendar'], 'calendar'],
+			[['refund'], 'refund'], [['dashboard', 'workspace'], 'dashboard'],
+			[['asset', 'stock'], 'assets'], [['back office'], 'backoffice'],
+			[['front office'], 'frontoffice'], [['tool'], 'tools'], [['web'], 'website'],
+			[['manufacturing'], 'manufacturing'], [['buying'], 'buying'], [['selling'], 'selling'],
+			[['project'], 'projects'], [['support', 'help'], 'support'], [['quality'], 'quality'],
+		];
+		for (const [keywords, key] of keywordMap) {
+			if (keywords.some(k => lowerName.includes(k))) return key;
+		}
+		return 'default';
+	}
 
+	getIcon(key, color) {
 		const iconMap = {
 			home: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H15v-5h-6v5H4a1 1 0 0 1-1-1z"/></svg>`,
 			accounting: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h5M8 17h8M8 9h2"/></svg>`,
@@ -1121,53 +1133,237 @@ class FrappeDeskTheme {
 			quality: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>`,
 			default: (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>`,
 		};
+		return iconMap[key] ? iconMap[key](color) : iconMap.default(color);
+	}
 
-		const keywordMap = [
-			[['home'], 'home'], [['account', 'finance', 'ledger'], 'accounting'],
-			[['travel', 'flight', 'airline'], 'travel'], [['setting', 'config'], 'settings'],
-			[['report', 'analytic'], 'reports'], [['people', 'hr', 'human', 'user'], 'people'],
-			[['master'], 'masters'], [['customer', 'client', 'crm'], 'customers'],
-			[['supplier', 'vendor'], 'suppliers'], [['invoice', 'bill'], 'invoices'],
-			[['payment', 'receipt'], 'payments'], [['transaction'], 'transactions'],
-			[['hotel'], 'hotel'], [['visa'], 'visa'], [['calendar'], 'calendar'],
-			[['refund'], 'refund'], [['dashboard', 'workspace'], 'dashboard'],
-			[['asset', 'stock'], 'assets'], [['back office'], 'backoffice'],
-			[['front office'], 'frontoffice'], [['tool'], 'tools'], [['web'], 'website'],
-			[['manufacturing'], 'manufacturing'], [['buying'], 'buying'], [['selling'], 'selling'],
-			[['project'], 'projects'], [['support', 'help'], 'support'], [['quality'], 'quality'],
-		];
+	hexToRgb(hex) {
+		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '148, 163, 184';
+	}
 
-		const getIconKey = (name) => {
-			if (!name) return 'default';
-			const lowerName = name.toLowerCase();
-			for (const [keywords, key] of keywordMap) {
-				if (keywords.some(k => lowerName.includes(k))) return key;
-			}
-			return 'default';
+	applySidebarIcons() {
+		const colors = {
+			home: '#8B5CF6', accounting: '#10B981', travel: '#3ea1af', settings: '#64748B',
+			reports: '#F43F5E', people: '#8c0bf5ff', masters: '#6366F1', customers: '#EC4899',
+			suppliers: '#8B5CF6', invoices: '#10B981', payments: '#F59E0B', transactions: '#06B6D4',
+			hotel: '#6366F1', visa: '#3B82F6', calendar: '#F43F5E', refund: '#64748B',
+			dashboard: '#8B5CF6', assets: '#10B981', backoffice: '#3ea1af', frontoffice: '#06B6D4',
+			tools: '#64748B', website: '#A855F7', manufacturing: '#475569', stock: '#F59E0B',
+			buying: '#F97316', selling: '#EC4899', projects: '#6366F1', support: '#3ea1af',
+			quality: '#10B981', default: '#94A3B8'
 		};
 
-		const hexToRgb = (hex) => {
-			const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-			return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '148, 163, 184';
-		};
-
-		const items = document.querySelectorAll('.standard-sidebar-item, .sidebar-item-container');
-		items.forEach((item) => {
+		// 1. Sidebar items — skip already processed
+		const sidebarItems = document.querySelectorAll('.standard-sidebar-item:not(.icons-applied), .sidebar-item-container:not(.icons-applied)');
+		sidebarItems.forEach((item) => {
 			const label = item.querySelector('.sidebar-item-label, .item-anchor');
 			if (!label) return;
 
 			const itemName = item.getAttribute('item-name') || label.textContent.trim();
-			const key = getIconKey(itemName);
+			const key = this.getIconKey(itemName);
 			const color = colors[key] || colors.default;
 
 			const iconContainer = item.querySelector('.sidebar-item-icon');
 			if (iconContainer) {
-				iconContainer.innerHTML = iconMap[key](color);
+				iconContainer.innerHTML = this.getIcon(key, color);
 				iconContainer.classList.add('premium-icon-container');
 				iconContainer.style.setProperty('--icon-brand-color', color);
-				iconContainer.style.setProperty('--icon-brand-color-rgb', hexToRgb(color));
+				iconContainer.style.setProperty('--icon-brand-color-rgb', this.hexToRgb(color));
 			}
+			item.classList.add('icons-applied');
 		});
+
+		// 2. Workspace Cards — skip already processed
+		const workspaceCards = document.querySelectorAll('.widget.links-widget-box:not(.icons-applied)');
+		workspaceCards.forEach((card) => {
+			const cardName = card.closest('[card_name]')?.getAttribute('card_name') || card.querySelector('.widget-title')?.textContent.trim();
+			const iconData = this.getCardIconData(cardName);
+
+			// Inject icon inside .widget-label so it aligns flush with the title via CSS gap
+			const widgetLabel = card.querySelector('.widget-label');
+			if (widgetLabel && !widgetLabel.querySelector('.premium-card-icon')) {
+				const iconSpan = document.createElement('span');
+				iconSpan.className = 'premium-card-icon';
+				iconSpan.style.background = `rgba(${this.hexToRgb(iconData.color)}, 0.12)`;
+				iconSpan.innerHTML = iconData.svg;
+				widgetLabel.prepend(iconSpan);
+			}
+
+			card.classList.add('icons-applied');
+		});
+	}
+
+	/**
+	 * Get card-specific icon data by exact heading name, with keyword fallback.
+	 * Returns { color, svg } for each card heading.
+	 */
+	getCardIconData(name) {
+		const n = (name || '').trim();
+
+		// ── Exact heading → unique icon + color ──
+		const map = {
+			// Back Office
+			'Billing': {
+				color: '#10B981',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 10h8"/><path d="M8 14h4"/></svg>`
+			},
+			'Bank Entries': {
+				color: '#3B82F6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M12 3l9 7H3z"/><path d="M6 10v11"/><path d="M10 10v11"/><path d="M14 10v11"/><path d="M18 10v11"/></svg>`
+			},
+			'Financial Adjustments': {
+				color: '#8B5CF6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="m8 8 4-4 4 4"/><path d="m8 16 4 4 4-4"/></svg>`
+			},
+
+			// Reports
+			'Customer Report': {
+				color: '#EC4899',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#EC4899" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 8v6"/><path d="M19 11h6"/></svg>`
+			},
+			'Supplier Report': {
+				color: '#F97316',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`
+			},
+			'Sales Report': {
+				color: '#14B8A6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 12-4-4v3H3v2h15v3z"/><path d="M6 20V10"/><path d="M10 20V4"/><path d="M14 20v-6"/></svg>`
+			},
+			'Account Report': {
+				color: '#6366F1',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h3"/><path d="M8 17h6"/><path d="M8 9h1"/></svg>`
+			},
+			'Management Report': {
+				color: '#7C3AED',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>`
+			},
+			'Financial Statement': {
+				color: '#059669',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>`
+			},
+			'Clients Hunting Engine': {
+				color: '#F43F5E',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`
+			},
+
+			// Master
+			'Partner Setup': {
+				color: '#06B6D4',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+			},
+			'Travel Setup': {
+				color: '#0D9488',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>`
+			},
+			'Other Configuration': {
+				color: '#64748B',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="10" r="2"/><circle cx="20" cy="14" r="2"/></svg>`
+			},
+			'Bank Setup': {
+				color: '#2563EB',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h3"/><path d="M13 15h5"/></svg>`
+			},
+			'Data Import and Settings': {
+				color: '#D97706',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>`
+			},
+			'Accounting': {
+				color: '#10B981',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h4"/><path d="M14 14h2"/><path d="M8 18h2"/><path d="M14 18h2"/></svg>`
+			},
+
+			// Support
+			'Issues': {
+				color: '#EF4444',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><circle cx="12" cy="17" r=".5" fill="#EF4444"/></svg>`
+			},
+			'Maintenance': {
+				color: '#475569',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`
+			},
+			'Warranty': {
+				color: '#0D9488',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>`
+			},
+			'Settings': {
+				color: '#6B7280',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/></svg>`
+			},
+			'Reports': {
+				color: '#F43F5E',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="18" y1="20" x2="18" y2="14"/><line x1="14" y1="20" x2="14" y2="12"/><line x1="10" y1="20" x2="10" y2="16"/></svg>`
+			},
+
+			// Users
+			'Users': {
+				color: '#8B5CF6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+			},
+			'Logs': {
+				color: '#D97706',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>`
+			},
+			'Permissions': {
+				color: '#3B82F6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="#3B82F6"/></svg>`
+			},
+			'User Permission': {
+				color: '#06B6D4',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>`
+			},
+
+			// Tools
+			'Data': {
+				color: '#14B8A6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>`
+			},
+			'Email': {
+				color: '#3B82F6',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`
+			},
+			'Printing': {
+				color: '#6B7280',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="8"/></svg>`
+			},
+
+			// Settings
+			'Agency Settings': {
+				color: '#0D9488',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg>`
+			},
+			'Email / Notifications': {
+				color: '#F59E0B',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M12 2v1"/></svg>`
+			},
+			'Module Settings': {
+				color: '#6366F1',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`
+			},
+			'Core': {
+				color: '#475569',
+				svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>`
+			},
+		};
+
+		// Exact match (case-insensitive)
+		for (const [key, val] of Object.entries(map)) {
+			if (key.toLowerCase() === n.toLowerCase()) return val;
+		}
+
+		// Keyword fallback — use the existing getIconKey system
+		const fallbackKey = this.getIconKey(n);
+		const fallbackColor = {
+			home: '#8B5CF6', accounting: '#10B981', travel: '#3ea1af', settings: '#64748B',
+			reports: '#F43F5E', people: '#8c0bf5', masters: '#6366F1', customers: '#EC4899',
+			suppliers: '#8B5CF6', invoices: '#10B981', payments: '#F59E0B', transactions: '#06B6D4',
+			hotel: '#6366F1', visa: '#3B82F6', calendar: '#F43F5E', refund: '#64748B',
+			dashboard: '#8B5CF6', assets: '#10B981', backoffice: '#3ea1af', frontoffice: '#06B6D4',
+			tools: '#64748B', website: '#A855F7', manufacturing: '#475569', stock: '#F59E0B',
+			buying: '#F97316', selling: '#EC4899', projects: '#6366F1', support: '#3ea1af',
+			quality: '#10B981', default: '#94A3B8'
+		}[fallbackKey] || '#94A3B8';
+
+		return { color: fallbackColor, svg: this.getIcon(fallbackKey, fallbackColor) };
 	}
 }
 
@@ -1192,3 +1388,4 @@ if (document.readyState === "complete" || document.readyState === "interactive")
 } else {
 	document.addEventListener("DOMContentLoaded", initTheme);
 }
+
