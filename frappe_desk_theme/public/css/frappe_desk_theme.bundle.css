@@ -164,7 +164,7 @@ label.control-label {
 
 /* Main navigation bar - top-level container with custom background */
 .navbar {
-    background-color: var(--navbar-bg, #fff);
+    background: linear-gradient(to left, #3ba7b5, #6819a7c2);
 }
 
 /* Navbar text elements - brand name and container text color */
@@ -495,7 +495,7 @@ div.level-right {
 
 /* Premium Workspace Card Styling – Compact Travel Agency Look */
 
-/* Prevent unstyled flash: cards start hidden, revealed instantly by CSS */
+/* Cards appear instantly styled — no animation to prevent FOUC on workspace nav */
 .widget.links-widget-box {
     background: rgba(255, 255, 255, 0.75) !important;
     backdrop-filter: blur(10px) saturate(160%);
@@ -506,19 +506,8 @@ div.level-right {
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
     overflow: hidden;
     position: relative;
-    animation: cardReveal 0.3s ease forwards;
-}
-
-@keyframes cardReveal {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    /* No animation — cards are styled immediately via CSS to avoid flash */
+    opacity: 1;
 }
 
 .widget.links-widget-box:hover {

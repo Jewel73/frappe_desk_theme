@@ -669,6 +669,7 @@ class FrappeDeskTheme {
 		this.showLoginBox();
 		this.createFooter();
 		this.applySidebarIcons();
+		this.applyWorkspaceCardIcons();
 	}
 
 	/**
@@ -931,18 +932,64 @@ class FrappeDeskTheme {
 		// Listen for DOM changes to apply theme to dynamically added elements
 		// Frappe uses dynamic content loading, so we need to monitor for new elements
 		let footerTimeout;
-		const observer = new MutationObserver(() => {
+		let cardRafScheduled = false;
+		let sidebarRafScheduled = false;
+
+		const observer = new MutationObserver((mutations) => {
 			this.toggleSearchBar();
 
-			// Debounce footer creation to avoid performance issues
+			// Smart detection: check if workspace cards or sidebar items were added
+			let hasNewCards = false;
+			let hasNewSidebarItems = false;
+
+			for (const mutation of mutations) {
+				for (const node of mutation.addedNodes) {
+					if (node.nodeType !== 1) continue;
+					// Check for new workspace cards
+					if (
+						node.classList?.contains('links-widget-box') ||
+						node.querySelector?.('.links-widget-box:not(.icons-applied)')
+					) {
+						hasNewCards = true;
+					}
+					// Check for new sidebar items
+					if (
+						node.classList?.contains('standard-sidebar-item') ||
+						node.classList?.contains('sidebar-item-container') ||
+						node.querySelector?.('.standard-sidebar-item:not(.icons-applied)')
+					) {
+						hasNewSidebarItems = true;
+					}
+					if (hasNewCards && hasNewSidebarItems) break;
+				}
+				if (hasNewCards && hasNewSidebarItems) break;
+			}
+
+			// Process new workspace cards immediately on next animation frame
+			if (hasNewCards && !cardRafScheduled) {
+				cardRafScheduled = true;
+				requestAnimationFrame(() => {
+					this.applyWorkspaceCardIcons();
+					cardRafScheduled = false;
+				});
+			}
+
+			// Process new sidebar items only when new ones appear
+			if (hasNewSidebarItems && !sidebarRafScheduled) {
+				sidebarRafScheduled = true;
+				requestAnimationFrame(() => {
+					this.applySidebarIcons();
+					sidebarRafScheduled = false;
+				});
+			}
+
+			// Footer check remains debounced (not performance-critical)
 			clearTimeout(footerTimeout);
 			footerTimeout = setTimeout(() => {
-				// Only create footer if it doesn't exist
 				if (!document.querySelector("#desk-footer")) {
 					this.createFooter();
 				}
-				this.applySidebarIcons();
-			}, 150); // 150ms debounce — fast enough to feel instant
+			}, 150);
 		});
 
 		// Observe all changes in document body and its children
@@ -1067,8 +1114,30 @@ class FrappeDeskTheme {
 	}
 
 	setupSidebarObserver() {
-		const observer = new MutationObserver(() => {
-			window.requestAnimationFrame(() => this.applySidebarIcons());
+		let sidebarRafPending = false;
+		const observer = new MutationObserver((mutations) => {
+			// Only re-process if new sidebar items were actually added
+			let hasNew = false;
+			for (const mutation of mutations) {
+				for (const node of mutation.addedNodes) {
+					if (node.nodeType === 1 && (
+						node.classList?.contains('standard-sidebar-item') ||
+						node.classList?.contains('sidebar-item-container') ||
+						node.querySelector?.('.standard-sidebar-item:not(.icons-applied)')
+					)) {
+						hasNew = true;
+						break;
+					}
+				}
+				if (hasNew) break;
+			}
+			if (hasNew && !sidebarRafPending) {
+				sidebarRafPending = true;
+				window.requestAnimationFrame(() => {
+					this.applySidebarIcons();
+					sidebarRafPending = false;
+				});
+			}
 		});
 
 		const sidebarContainer = document.querySelector('.layout-side-section, .list-sidebar');
@@ -1141,6 +1210,11 @@ class FrappeDeskTheme {
 		return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '148, 163, 184';
 	}
 
+	/**
+	 * Apply premium icons to sidebar items only.
+	 * Sidebar items persist across workspace navigation, so this only
+	 * needs to run once (or when new sidebar items are dynamically added).
+	 */
 	applySidebarIcons() {
 		const colors = {
 			home: '#8B5CF6', accounting: '#10B981', travel: '#3ea1af', settings: '#64748B',
@@ -1153,8 +1227,10 @@ class FrappeDeskTheme {
 			quality: '#10B981', default: '#94A3B8'
 		};
 
-		// 1. Sidebar items — skip already processed
+		// Sidebar items — skip already processed
 		const sidebarItems = document.querySelectorAll('.standard-sidebar-item:not(.icons-applied), .sidebar-item-container:not(.icons-applied)');
+		if (!sidebarItems.length) return;
+
 		sidebarItems.forEach((item) => {
 			const label = item.querySelector('.sidebar-item-label, .item-anchor');
 			if (!label) return;
@@ -1172,9 +1248,18 @@ class FrappeDeskTheme {
 			}
 			item.classList.add('icons-applied');
 		});
+	}
 
-		// 2. Workspace Cards — skip already processed
+	/**
+	 * Apply premium icons to workspace cards only.
+	 * Cards are destroyed and recreated by Frappe on workspace navigation,
+	 * so this needs to run on every page-change. Uses requestAnimationFrame
+	 * for minimal visual delay.
+	 */
+	applyWorkspaceCardIcons() {
 		const workspaceCards = document.querySelectorAll('.widget.links-widget-box:not(.icons-applied)');
+		if (!workspaceCards.length) return;
+
 		workspaceCards.forEach((card) => {
 			const cardName = card.closest('[card_name]')?.getAttribute('card_name') || card.querySelector('.widget-title')?.textContent.trim();
 			const iconData = this.getCardIconData(cardName);
@@ -1372,13 +1457,20 @@ const initTheme = () => {
 	if (!window.frappeDeskTheme) {
 		const theme = new FrappeDeskTheme();
 		window.frappeDeskTheme = theme;
-		// Immediate first pass
+		// Immediate first pass — both sidebar + cards
 		theme.applySidebarIcons();
+		theme.applyWorkspaceCardIcons();
 
-		// Page change listeners
-		$(document).on('page-change', () => theme.applySidebarIcons());
-		// Backup ready listener
-		$(document).ready(() => theme.applySidebarIcons());
+		// Page change: only re-process workspace cards (sidebar icons persist)
+		// Use requestAnimationFrame for the fastest possible paint
+		$(document).on('page-change', () => {
+			requestAnimationFrame(() => theme.applyWorkspaceCardIcons());
+		});
+		// Backup ready listener — full init on first load
+		$(document).ready(() => {
+			theme.applySidebarIcons();
+			theme.applyWorkspaceCardIcons();
+		});
 	}
 };
 
