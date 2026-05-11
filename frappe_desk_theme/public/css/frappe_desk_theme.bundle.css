@@ -155,12 +155,27 @@ select.form-control,
 .form-control[data-fieldtype="Select"] {
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding: 4px 28px 4px 12px;
+    -moz-appearance: none;
+    padding: 4px 30px 4px 12px;
     height: 36px;
     line-height: normal;
+    cursor: pointer;
+}
+
+/* Frappe's native .select-icon — reposition to vertically center in our taller input */
+.frappe-control[data-fieldtype="Select"] .control-input .select-icon,
+.frappe-control[data-fieldtype="Select"].form-group .select-icon {
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+}
+
+.frappe-control[data-fieldtype="Select"] .control-input:hover .select-icon,
+.frappe-control[data-fieldtype="Select"].form-group:hover .select-icon {
+    opacity: 1;
 }
 
 /* HTML fields / Code editors inside forms — consistent border */
