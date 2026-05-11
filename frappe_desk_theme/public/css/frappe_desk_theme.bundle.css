@@ -75,7 +75,7 @@
 .awesomplete .form-control {
     background-color: var(--input-bg, #ffffff) !important;
     color: var(--input-color, #1e293b);
-    border: 1.5px solid var(--input-border, #e2e8f0) !important;
+    border: 1.5px solid #7be4e947 !important;
     border-radius: 8px !important;
     padding: 8px 12px;
     font-size: 13px;
@@ -157,12 +157,12 @@ select.form-control,
     -webkit-appearance: none;
     -moz-appearance: none;
     padding: 4px 30px 4px 12px;
-    height: 36px;
+    /* height: 36px; */
     line-height: normal;
     cursor: pointer;
 }
 
-/* Frappe's native .select-icon — reposition to vertically center in our taller input */
+/* Frappe's native .select-icon — reposition to vertically center in our taller input 
 .frappe-control[data-fieldtype="Select"] .control-input .select-icon,
 .frappe-control[data-fieldtype="Select"].form-group .select-icon {
     top: 50%;
@@ -172,6 +172,7 @@ select.form-control,
     align-items: center;
     opacity: 0.6;
 }
+*/
 
 .frappe-control[data-fieldtype="Select"] .control-input:hover .select-icon,
 .frappe-control[data-fieldtype="Select"].form-group:hover .select-icon {

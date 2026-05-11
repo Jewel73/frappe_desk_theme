@@ -24,12 +24,12 @@ app_license = "mit"
 # Includes in <head>
 # ------------------
 # include js, css files in header of desk.html
-app_include_css = "/assets/frappe_desk_theme/css/frappe_desk_theme.bundle.css?v=5"
+app_include_css = "/assets/frappe_desk_theme/css/frappe_desk_theme.bundle.css?v=8"
 # app_include_js = "/assets/frappe_desk_theme/js/frappe_desk_theme.bundle.js"
 
 app_include_js = [
-	"/assets/frappe_desk_theme/js/frappe_desk_theme.bundle.js?v=5",
-	"/assets/frappe_desk_theme/js/sidebar/sidebar_override.bundle.js?v=5",
+	"/assets/frappe_desk_theme/js/frappe_desk_theme.bundle.js?v=6",
+	"/assets/frappe_desk_theme/js/sidebar/sidebar_override.bundle.js?v=6",
 	"/assets/frappe_desk_theme/js/sidebar/breadcrumb_override_patch.js?v=5",
 ]
 # include js, css files in header of web template
