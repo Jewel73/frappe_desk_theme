@@ -75,7 +75,7 @@
 .awesomplete .form-control {
     background-color: var(--input-bg, #ffffff) !important;
     color: var(--input-color, #1e293b);
-    border: 1.5px solid #7be4e947 !important;
+    border: 1.5px solid #b8adad47 !important;
     border-radius: 8px !important;
     padding: 8px 12px;
     font-size: 13px;
@@ -282,7 +282,10 @@ select.form-control,
 
 /* Main navigation bar - top-level container with custom background */
 .navbar {
-    background: linear-gradient(to left, #3ba7b5, #6819a7c2);
+    height: 48px;
+    background: #1E3A5F;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0;
 }
 
 /* Navbar text elements - brand name and container text color */
@@ -362,15 +365,29 @@ button.navbar-toggler {
 .btn.btn-default.ellipsis,
 .btn-default,
 .btn-default:active {
-    background-color: var(--btn-secondary-bg, #f3f3f3);
-    color: var(--btn-secondary-color);
+    /* background-color: var(--btn-secondary-bg, #f3f3f3); */
+    /* padding: 20px; */
+    background: rgb(255 255 255 / 75%) !important;
+    color: #111;
+    padding: 12px 20px;
+    border: 1px solid rgb(81 93 155 / 90%);
+    /* border-top: 1px solid rgba(255, 255, 255, 1); */
+    /* border-bottom: 1px solid rgba(210, 210, 210, .9); */
+    /* border-radius: 14px; */
+    /* backdrop-filter: blur(16px); */
+    /* -webkit-backdrop-filter: blur(16px); */
+    /* box-shadow: inset 0 1px 0 rgb(225 225 225 / 95%), inset 0 -1px 0 rgba(0, 0, 0, .06), 0 4px 12px rgba(0, 0, 0, .08), 0 1px 3px rgba(0, 0, 0, .05); */
+    transition: all .25s ease;
 }
 
 /* Secondary button hover effects - consistent interaction feedback */
 .btn.btn-default.ellipsis:hover,
 .btn-default:hover {
-    background-color: var(--btn-secondary-hover-bg, #f3f3f3);
-    color: var(--btn-secondary-hover-color);
+    background: rgb(238 242 255 / 95%) !important;
+    border-color: rgb(81 93 155) !important;
+    color: #0f172a !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(81, 93, 155, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 /* ========================================
