@@ -288,6 +288,8 @@ select.form-control,
     padding: 0;
 }
 
+
+
 /* Navbar text elements - brand name and container text color */
 .navbar.container,
 .navbar-brand {
@@ -561,8 +563,9 @@ body {
 
 /* Table headers - column headers with custom background and text colors */
 .level.list-row-head.text-muted {
-    background-color: var(--table-head-bg);
+    background-color: #1E3A5F;
 }
+
 
 /* Table header content - text elements in table headers */
 .level-left.list-header-subject,
